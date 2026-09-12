@@ -72,6 +72,22 @@ async function blobFromUrl(url) {
   return blob;
 }
 
+const ANSWER_SYS = "If you reason, you may show the reasoning. Always finish with a complete answer. End with a line in this exact form:\nFINAL: <the answer>";
+
+function formatThinkAnswer(raw, extraReasoning) {
+  const text = String(raw || "").trim();
+  const extra = String(extraReasoning || "").trim();
+  const matches = [...text.matchAll(/(?:^|\n)\s*(?:FINAL(?:\s*ANSWER)?|Final Answer)\s*[:\-]\s*(.+)/gi)];
+  const answer = matches.length ? matches[matches.length - 1][1].trim() : "";
+  const looksLikeThink = /here'?s a thinking process|^\s*\d+\.\s+\*\*/i.test(text);
+  if (!answer && !looksLikeThink && !extra) return text;
+  const thinking = [extra, text.replace(/(?:^|\n)\s*(?:FINAL(?:\s*ANSWER)?|Final Answer)\s*[:\-]\s*.+/gi, "").trim()]
+    .filter(Boolean)
+    .join("\n\n");
+  if (answer) return `Answer\n${answer}\n\n\u2014\u2014 thinking \u2014\u2014\n${thinking}`;
+  return thinking;
+}
+
 export const PROVIDERS = [
   {
     id: "unclose_qwen",
@@ -82,7 +98,7 @@ export const PROVIDERS = [
     note: "Public keyless chat endpoint. No signup.",
     async generate({ prompt, model, system, history }) {
       const messages = [];
-      if (system) messages.push({ role: "system", content: system });
+      messages.push({ role: "system", content: system ? `${ANSWER_SYS}\n\n${system}` : ANSWER_SYS });
       for (const m of history || []) {
         if (!m.text) continue;
         messages.push({ role: m.role === "assistant" ? "assistant" : "user", content: m.text });
@@ -94,13 +110,14 @@ export const PROVIDERS = [
         body: JSON.stringify({
           model: model || "Lorbus/Qwen3.6-27B-int4-AutoRound",
           messages,
-          max_tokens: 512
+          max_tokens: 4096
         })
       });
       if (!res.ok) throw new Error(await readError(res));
       const data = await res.json();
-      const text = data.choices?.[0]?.message?.content || JSON.stringify(data);
-      return { text };
+      const msg = data.choices?.[0]?.message || {};
+      const text = msg.content || JSON.stringify(data);
+      return { text: formatThinkAnswer(text, msg.reasoning || msg.reasoning_content) };
     }
   },
   {
