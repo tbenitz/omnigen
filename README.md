@@ -1,78 +1,35 @@
 # OmniGen
 
-A static GitHub Pages playground that talks to several **free / free-tier AI APIs** for **text**, **image**, and **video** generation from one UI.
+A static GitHub Pages playground for **keyless** text, image, and video generation.
 
-You can send the same prompt to multiple providers, compare the replies, keep a local thread history, and export whatever you want to keep.
+No API keys to paste. Providers that started charging (Pollinations 402) or that require a personal key were removed.
 
 ## Live site
 
-After GitHub Pages is enabled:
-
 **https://tbenitz.github.io/omnigen/**
 
-Enable it with: repo **Settings → Pages → Deploy from branch → `main` / `/ (root)`**.
+Enable Pages: repo **Settings → Pages → Deploy from branch → `main` / `/ (root)`**.
 
-## What it does
+## Providers (verified keyless)
 
-- Text, image, and video modes
-- Multi-provider compare in one thread
-- History stored in **IndexedDB** (messages + image/video blobs)
-- Persistent banner: clearing cache / site data **deletes everything**
-- Export choices:
-  - ZIP of thread markdown + attachments
-  - ZIP of attachments only
-  - JSON without media
-  - JSON with base64 attachments
-- Import a previously exported JSON bundle
-- Optional BYOK keys kept in `localStorage` on this device only
+| Provider | Mode | How it stays free |
+|---|---|---|
+| UncloseAI Qwen (`hermes.ai.unturf.com`) | Text | Public chat endpoint, no key |
+| AI Horde | Text + image | Built-in anonymous token `0000000000` |
+| DevToolBox Llama | Text | Public Cloudflare Worker, no key |
+| Puter.js | Text + image + video | No developer key. First use may show a Continue dialog. Light text/image use is free; video often is not |
 
-## Providers
+Video is the weak spot. There is currently no reliable, always-on, keyless free video API. Puter Video is included and will error honestly if credits are gone.
 
-Works with **no key** (rate-limited, public endpoints):
+## Data
 
-| Provider | Modes |
-|---|---|
-| [Pollinations](https://pollinations.ai) text | Text |
-| Pollinations image | Image |
-| Pollinations video | Video |
-| [Puter.js](https://developer.puter.com) (opt-in) | Image |
-
-Bring-your-own-key (free tiers, browser CORS permitting):
-
-- Groq
-- OpenRouter (`:free` models)
-- Google Gemini (AI Studio)
-- Hugging Face Inference
-- Cerebras
-- Any custom OpenAI-compatible base URL
-
-Keys never leave the browser except as `Authorization` headers to the provider you selected.
-
-## Data warning
-
-This is a static site. There is no server and no account.
-
-- Threads live in IndexedDB under this origin
-- Keys live in localStorage
-- A cache clear, “clear site data”, or another browser profile starts from empty
-- Export anything you care about
+Threads live in this browser’s IndexedDB. Clearing cache deletes them. Export before you wipe site data.
 
 ## Local run
-
-Any static server:
 
 ```bash
 python3 -m http.server 8080
 ```
-
-Then open `http://localhost:8080`.
-
-## Limits you should expect
-
-- Public Pollinations calls are IP / hourly rate limited
-- Video endpoints are the least reliable of the free options and may require a Pollinations key
-- Some BYOK hosts block browser origins (CORS). The UI records that error on the thread so you can see which provider failed
-- IndexedDB quotas vary by browser; the header shows an estimate when the Storage API exists
 
 ## License
 
