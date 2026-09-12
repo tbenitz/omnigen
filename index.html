@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OmniGen — Free AI Playground</title>
+  <meta name="description" content="Test free text, image, and video generation APIs in one static site. History is stored in IndexedDB.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <button class="icon-btn" id="toggleSidebar" aria-label="Threads">☰</button>
+      <div class="brand">
+        <div class="logo">Ω</div>
+        <div>
+          <h1>OmniGen</h1>
+          <p>Multi-provider AI lab</p>
+        </div>
+      </div>
+      <div class="modes">
+        <button data-mode="text" class="active">Text</button>
+        <button data-mode="image">Image</button>
+        <button data-mode="video">Video</button>
+      </div>
+      <div class="top-actions">
+        <span id="storageHint" class="t-meta"></span>
+        <button class="ghost" id="exportBtn">Export</button>
+        <button class="ghost" id="settingsBtn">Settings</button>
+      </div>
+    </header>
+
+    <div class="warn-bar" id="warnBar">
+      <strong>Local only.</strong>
+      Threads and attachments live in this browser’s IndexedDB. Clearing site data, cookies, or cache for this origin will permanently delete them. Export anything you care about.
+      <button class="ghost" id="dismissWarn">Got it</button>
+    </div>
+
+    <div class="workspace">
+      <aside class="sidebar" id="sidebar">
+        <div class="side-head">
+          <input id="threadSearch" placeholder="Search threads">
+          <button class="primary" id="newThread">New</button>
+        </div>
+        <div class="thread-list" id="threadList"></div>
+      </aside>
+
+      <section class="main">
+        <div class="thread-head">
+          <input class="title" id="threadTitle" placeholder="Thread title">
+          <span class="chip" id="modeLabel">text</span>
+          <button class="ghost" id="deleteThread">Delete</button>
+        </div>
+        <div class="messages" id="messages"></div>
+        <div class="composer">
+          <div class="provider-row" id="providerRow"></div>
+          <div class="opts" id="opts"></div>
+          <div class="composer-row">
+            <textarea id="prompt" placeholder="Prompt…  Ctrl/⌘ + Enter to send to every selected provider"></textarea>
+            <button class="primary" id="sendBtn">Generate</button>
+          </div>
+          <div class="status" id="status">Ready. No keys required for Pollinations.</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal-back" id="settingsModal">
+    <div class="modal">
+      <h2>Settings & API keys</h2>
+      <p class="help">Keys stay in localStorage on this device and are sent only to the provider you call. Never commit keys to Git.</p>
+      <div class="keys">
+        <label class="key-row"><span>Enable Puter.js</span><input type="checkbox" id="enablePuter"></label>
+        <label class="key-row"><span>Pollinations key (optional)</span><input id="keyPollinations" placeholder="pk_ or sk_ for higher limits"></label>
+        <label class="key-row"><span>Groq</span><input id="keyGroq" placeholder="gsk_…"></label>
+        <label class="key-row"><span>OpenRouter</span><input id="keyOpenrouter" placeholder="sk-or-…"></label>
+        <label class="key-row"><span>Google Gemini</span><input id="keyGemini" placeholder="AI Studio key"></label>
+        <label class="key-row"><span>Hugging Face</span><input id="keyHf" placeholder="hf_…"></label>
+        <label class="key-row"><span>Cerebras</span><input id="keyCerebras" placeholder="csk_…"></label>
+        <label class="key-row"><span>Custom base URL</span><input id="customBase" placeholder="https://api.example.com/v1"></label>
+        <label class="key-row"><span>Custom API key</span><input id="keyCustom" placeholder="optional"></label>
+      </div>
+      <p class="help">BYOK providers may block browser calls with CORS. Pollinations is the most reliable no-backend option. Get keys: Groq console, OpenRouter, Google AI Studio, Hugging Face tokens, Cerebras cloud, Pollinations enter.pollinations.ai.</p>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+        <button class="ghost" id="closeSettings">Close</button>
+        <button class="primary" id="saveSettings">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-back" id="exportModal">
+    <div class="modal">
+      <h2>Export / import</h2>
+      <p class="help">Choose threads and payload. Attachments are the generated images and videos stored in IndexedDB.</p>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button class="ghost" id="selectAllThreads">Select all</button>
+        <label class="ghost">Import JSON <input type="file" id="importFile" accept="application/json" hidden></label>
+      </div>
+      <div class="thread-picks" id="exportThreads"></div>
+      <div class="export-opts">
+        <label><input type="radio" name="exportMode" value="zip-full" checked> ZIP — thread text + attachments</label>
+        <label><input type="radio" name="exportMode" value="attachments-only"> ZIP — attachments only</label>
+        <label><input type="radio" name="exportMode" value="json-text"> JSON — threads and messages, no media</label>
+        <label><input type="radio" name="exportMode" value="json-full"> JSON — threads, messages, and attachments as base64</label>
+      </div>
+      <div class="status" id="exportStatus"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+        <button class="ghost" id="closeExport">Close</button>
+        <button class="primary" id="runExport">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
