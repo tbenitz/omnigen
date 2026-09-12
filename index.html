@@ -75,7 +75,10 @@
       <div class="keys">
         <label class="key-row"><span>Load Puter.js</span><input type="checkbox" id="enablePuter" checked></label>
       </div>
-      <p class="help">Text: UncloseAI Qwen, AI Horde, DevToolBox Llama, Puter Chat. Image: AI Horde, Puter Image. Video: Puter Video only (often no free credits). Horde uses the public anonymous token 0000000000 internally so you do not type anything. Puter may show a one-time Continue dialog — that is not an API key.</p>
+      <p class="help">Text: UncloseAI Qwen, AI Horde, DevToolBox Llama, Puter Chat. Image: AI Horde, Puter Image. Video: Puter Video only (often no free credits). Click a provider chip, then Generate. Horde can take 1–3 minutes because it is a volunteer queue.</p>
+      <div style="display:none">
+        <input id="keyPollinations"><input id="keyGroq"><input id="keyOpenrouter"><input id="keyGemini"><input id="keyHf"><input id="keyCerebras"><input id="keyCustom"><input id="customBase">
+      </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
         <button class="ghost" id="closeSettings">Close</button>
         <button class="primary" id="saveSettings">Save</button>
