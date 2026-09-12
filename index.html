@@ -62,7 +62,7 @@
             <textarea id="prompt" placeholder="Prompt…  Ctrl/⌘ + Enter to send to every selected provider"></textarea>
             <button class="primary" id="sendBtn">Generate</button>
           </div>
-          <div class="status" id="status">Ready. No keys required for Pollinations.</div>
+          <div class="status" id="status">Ready. Keyless providers only — no API keys to paste.</div>
         </div>
       </section>
     </div>
@@ -70,20 +70,12 @@
 
   <div class="modal-back" id="settingsModal">
     <div class="modal">
-      <h2>Settings & API keys</h2>
-      <p class="help">Keys stay in localStorage on this device and are sent only to the provider you call. Never commit keys to Git.</p>
+      <h2>Settings</h2>
+      <p class="help">This build only calls public, keyless endpoints. You should never need to paste an API key. Pollinations was removed after it started returning HTTP 402 Payment Required.</p>
       <div class="keys">
-        <label class="key-row"><span>Enable Puter.js</span><input type="checkbox" id="enablePuter"></label>
-        <label class="key-row"><span>Pollinations key (optional)</span><input id="keyPollinations" placeholder="pk_ or sk_ for higher limits"></label>
-        <label class="key-row"><span>Groq</span><input id="keyGroq" placeholder="gsk_…"></label>
-        <label class="key-row"><span>OpenRouter</span><input id="keyOpenrouter" placeholder="sk-or-…"></label>
-        <label class="key-row"><span>Google Gemini</span><input id="keyGemini" placeholder="AI Studio key"></label>
-        <label class="key-row"><span>Hugging Face</span><input id="keyHf" placeholder="hf_…"></label>
-        <label class="key-row"><span>Cerebras</span><input id="keyCerebras" placeholder="csk_…"></label>
-        <label class="key-row"><span>Custom base URL</span><input id="customBase" placeholder="https://api.example.com/v1"></label>
-        <label class="key-row"><span>Custom API key</span><input id="keyCustom" placeholder="optional"></label>
+        <label class="key-row"><span>Load Puter.js</span><input type="checkbox" id="enablePuter" checked></label>
       </div>
-      <p class="help">BYOK providers may block browser calls with CORS. Pollinations is the most reliable no-backend option. Get keys: Groq console, OpenRouter, Google AI Studio, Hugging Face tokens, Cerebras cloud, Pollinations enter.pollinations.ai.</p>
+      <p class="help">Text: UncloseAI Qwen, AI Horde, DevToolBox Llama, Puter Chat. Image: AI Horde, Puter Image. Video: Puter Video only (often no free credits). Horde uses the public anonymous token 0000000000 internally so you do not type anything. Puter may show a one-time Continue dialog — that is not an API key.</p>
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
         <button class="ghost" id="closeSettings">Close</button>
         <button class="primary" id="saveSettings">Save</button>
